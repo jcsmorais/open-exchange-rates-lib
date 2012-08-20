@@ -9,13 +9,13 @@ OpenExchangeRates is a PHP library for the services provided by [Open Exchange R
 Requirements
 ------------
 * PHP 5.3+
-
+* cURL support
 * An Open Exchange Rates [APP ID](https://openexchangerates.org/signup), although at the moment you're able to make service calls without it, this will change in the near future, so it's probably better if you register an account and start using your APP ID right away.
 
 
 Installation
 ------------
-In order to start using the library you need to unpack it to your project and include it's autoloader wherever you need it:
+In order to start using the library you need to unpack it to a folder labeled `OpenExchangeRates` inside your project and include it's autoloader wherever you need it:
 
 `require_once 'OpenExchangeRates/Autoload.php';`
 
