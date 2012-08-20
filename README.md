@@ -3,7 +3,7 @@ README
 
 What is OpenExchangeRates library?
 ----------------------------------
-OpenExchangeRates is a PHP library for the services provided by [Open Exchange Rates: a real-time exchange rates API for developers](http://openexchangerates.org).
+OpenExchangeRates is a PHP library for the services provided by [Open Exchange Rates](http://openexchangerates.org): a real-time exchange rates API for developers.
 
 
 Requirements
@@ -15,14 +15,14 @@ Requirements
 
 Installation
 ------------
-In order to start using the library you need to unpack it to a folder labeled `OpenExchangeRates` inside your project and include it's autoloader wherever you need it:
+In order to start using the library you need to unpack it to a folder labeled `OpenExchangeRates` inside your project, add it to [include_path](http://www.php.net/set_include_path) and include it's autoloader wherever you need it:
 
 `require_once 'OpenExchangeRates/Autoload.php';`
 
 
 Documentation
 -------------
-At the moment there's not much documentation besides the one who's delivered with the code. Eitherway, you can check a few usage examples [here](https://github.com/jcsmorais/openexchangerates/wiki/Usage).
+At the moment there's not much documentation besides the one who's delivered with the code. Eitherway, you can check a few usage examples [here](https://github.com/jcsmorais/open-exchange-rates-lib/wiki/Usage).
 
 
 Contributing
