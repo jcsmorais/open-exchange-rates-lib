@@ -22,7 +22,7 @@ In order to start using the library you need to unpack it to your project and in
 
 Documentation
 -------------
-At the moment there's not much documentation besides the one who's delivered with the code. Eitherway, you can check a few examples [here](http://github.com/jcsmorais/openexchangerates/wiki).
+At the moment there's not much documentation besides the one who's delivered with the code. Eitherway, you can check a few usage examples [here](https://github.com/jcsmorais/openexchangerates/wiki/Usage).
 
 
 Contributing
