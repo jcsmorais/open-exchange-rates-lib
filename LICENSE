@@ -1,8 +1,8 @@
-OpenExchangeRates is a PHP library for the services provided by
+Open Exchange Rates library is a PHP based library for the services provided by
 http://openexchangerates.org a real-time exchange rates API for developers.
 
 Copyright (c) 2012 João Morais
-http://github.com/jcsmorais/openexchangerates
+http://github.com/jcsmorais/open-exchange-rates-lib
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

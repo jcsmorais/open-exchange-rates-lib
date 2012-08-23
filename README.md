@@ -1,9 +1,9 @@
 README
 ======
 
-What is OpenExchangeRates library?
+What is Open Exchange Rates library?
 ----------------------------------
-OpenExchangeRates is a PHP library for the services provided by [Open Exchange Rates](http://openexchangerates.org): a real-time exchange rates API for developers.
+Open Exchange Rates library is a PHP based library for the services provided by [Open Exchange Rates](http://openexchangerates.org): a real-time exchange rates API for developers.
 
 
 Requirements
@@ -27,4 +27,4 @@ At the moment there's not much documentation besides the one who's delivered wit
 
 Contributing
 ------------
-OpenExchangeRates library is an open source project. If you'd like to contribute, please do so by forking the project and making pull requests and/or by creating issues on github.
+Open Exchange Rates library is an open source project. If you'd like to contribute, please do so by forking the project and making pull requests and/or by creating issues on github.
