@@ -54,14 +54,5 @@ class Historical extends Rates
 
         $this->_date = $date;
     }
-    
-    /**
-     * Fetch rates.
-     */
-    public function fetch()
-    {
-        $result = $this->_service->fetch();
-        $this->_base = $result['base'];
-        $this->_rates = $result['rates'];
-    }
+
 }

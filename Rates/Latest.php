@@ -48,13 +48,4 @@ class Latest extends Rates
         );
     }
 
-    /**
-     * Fetch rates.
-     */
-    public function fetch()
-    {
-        $result = $this->_service->fetch();
-        $this->_base = $result['base'];
-        $this->_rates = $result['rates'];
-    }
 }

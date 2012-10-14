@@ -19,7 +19,7 @@ namespace OpenExchangeRates\Rates;
 
 use OpenExchangeRates\Rates\Exception\NotFoundException;
 
-class Rates
+abstract class Rates
 {
 
     /**
@@ -96,9 +96,20 @@ class Rates
         $base = $this->getBaseRate();
 
         $from = $this->getRateByIso4217($fromIso4217);
-        $to = $this->getRateByIso4217($toIso4217);
+        $to   = $this->getRateByIso4217($toIso4217);
 
         return $base / $from * $amount * $to;
+    }
+
+    /**
+     * Fetch rates.
+     */
+    public function fetch()
+    {
+        $result = $this->_service->fetch();
+
+        $this->_base  = $result['base'];
+        $this->_rates = $result['rates'];
     }
 
 }
