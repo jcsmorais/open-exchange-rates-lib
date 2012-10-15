@@ -54,10 +54,10 @@ class Service
      * Class constructor.
      *
      * @param string $endpoint API endpoint.
-     * @param string $appId API id Optional parameter, empty by default.
+     * @param string $appId API id.
      * @param bool $secureConnection Optional parameter, false by default.
      */
-    public function __construct($endpoint, $appId = '', $secureConnection = false)
+    public function __construct($endpoint, $appId, $secureConnection = false)
     {
         $this->_endpoint = $endpoint;
         $this->_appId = $appId;
