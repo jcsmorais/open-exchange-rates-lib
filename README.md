@@ -10,7 +10,7 @@ Requirements
 ------------
 * PHP 5.3+
 * cURL support
-* An Open Exchange Rates [APP ID](https://openexchangerates.org/signup), although at the moment you're able to make service calls without it, this will change in the near future, so it's probably better if you register an account and start using your APP ID right away.
+* An Open Exchange Rates [APP ID](https://openexchangerates.org/signup).
 
 
 Installation
@@ -22,7 +22,7 @@ In order to start using the library you need to unpack it to a folder labeled `O
 
 Documentation
 -------------
-At the moment there's not much documentation besides the one who's delivered with the code. Eitherway, you can check a few usage examples [here](https://github.com/jcsmorais/open-exchange-rates-lib/wiki/Usage).
+At the moment there's not much documentation besides the one who's delivered with the code. Either way, you can check a few usage examples [here](https://github.com/jcsmorais/open-exchange-rates-lib/wiki/Usage).
 
 
 Contributing
