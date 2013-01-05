@@ -1,0 +1,23 @@
+{
+    "name": "open-exchange-rates-lib",
+    "description": "Open Exchange Rates library is a PHP based library for the services provided by Open Exchange Rates: a real-time exchange rates API for developers.",
+    "license": [
+        "MIT"
+    ],
+    "authors": [
+        {
+            "name": "João Morais",
+            "email": "jcsmorais@gmail.com",
+            "homepage": "http://blog.joaomorais.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.3.14"
+    }
+}
