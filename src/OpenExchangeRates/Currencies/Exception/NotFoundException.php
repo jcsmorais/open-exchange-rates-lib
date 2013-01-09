@@ -18,12 +18,10 @@
 namespace OpenExchangeRates\Currencies\Exception;
 
 /**
- * Thrown when a currency isn't found while trying to retrieve it by it's
- * Iso4217 value.
+ * Thrown when a currency isn't found while trying to retrieve it by it's Iso4217 value.
  */
 class NotFoundException extends CurrenciesException
 {
-
     /**
      * Class constructor.
      *
@@ -35,5 +33,4 @@ class NotFoundException extends CurrenciesException
             sprintf("Currency not found for Iso4217 '%s'.", $iso4217)
         );
     }
-
 }
