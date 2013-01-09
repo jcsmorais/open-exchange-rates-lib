@@ -17,51 +17,110 @@
 
 namespace OpenExchangeRates\Service;
 
-use OpenExchangeRates\Service\Exception\InvalidAppIdException;
-use OpenExchangeRates\Service\Exception\NotFoundException;
-use OpenExchangeRates\Service\Exception\NotAllowedException;
-use OpenExchangeRates\Service\Exception\RuntimeException;
-use OpenExchangeRates\Service\Exception\TooManyRequestsException;
+use OpenExchangeRates\Service\Exception\ResponseErrorException;
+use OpenExchangeRates\Service\Exception\ResponseException;
 
 class Service
 {
-
     /**
-     * @var string API endpoint.
+     * @var string API url.
      */
-    protected $_endpoint;
+    protected $url;
 
     /*
-     * @var string API ID.
+     * @var string APP ID.
      */
-    protected $_appId;
+    protected $appId;
 
     /**
-     * @var bool Defines if service requests are made through a secure
-     * connection.
+     * @var bool Defines if service requests are made through a secure connection.
      */
-    protected $_secureConnection;
-
-    /**
-     * Known error constants.
-     */
-    const ERR_NOT_FOUND = 'not_found';
-    const ERR_INVALID_APP_ID = 'invalid_app_id';
-    const ERR_NOT_ALLOWED = 'not_allowed';
-    const ERR_TOO_MANY_REQUESTS = 'too_many_requests';
+    protected $secureConnection;
 
     /**
      * Class constructor.
      *
-     * @param string $endpoint API endpoint.
-     * @param string $appId API id.
-     * @param bool $secureConnection Optional parameter, false by default.
+     * @param string $url              API url.
+     * @param string $appId            APP id.
+     * @param bool   $secureConnection Optional parameter, false by default.
      */
-    public function __construct($endpoint, $appId, $secureConnection = false)
+    public function __construct($url, $appId, $secureConnection = false)
     {
-        $this->_endpoint = $endpoint;
-        $this->_appId = $appId;
-        $this->_secureConnection = $secureConnection;
+        $this->setUrl($url);
+        $this->setAppId($appId);
+        $this->setSecureConnection($secureConnection);
+    }
+
+    /**
+     * Defines API url.
+     *
+     * @param string $url API url.
+     *
+     * @return Service
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Defines APP id.
+     *
+     * @param string $appId APP id.
+     *
+     * @return Service
+     */
+    public function setAppId($appId)
+    {
+        $this->appId = $appId;
+
+        return $this;
+    }
+
+    /**
+     * Defines if service requests should be made through a secure connection.
+     *
+     * @param bool $secureConnection Status of secure connection.
+     *
+     * @return Service
+     */
+    public function setSecureConnection($secureConnection)
+    {
+        $this->secureConnection = $secureConnection;
+
+        return $this;
+    }
+
+    /**
+     * Retrieve API url.
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Retrieve APP Id.
+     *
+     * @return string
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * Retrieve secure connection usage status.
+     *
+     * @return bool
+     */
+    public function getSecureConnection()
+    {
+        return $this->secureConnection;
     }
 
     /**
@@ -71,10 +130,10 @@ class Service
      */
     public function getEndpoint()
     {
-        $endpoint = $this->_secureConnection ? 'https' : 'http';
+        $endpoint = $this->getSecureConnection() ? 'https' : 'http';
         $endpoint.= '://';
-        $endpoint.= $this->_endpoint;
-        $endpoint.= '?app_id=' . urlencode($this->_appId);
+        $endpoint.= $this->getUrl();
+        $endpoint.= '?app_id=' . urlencode($this->getAppId());
 
         return $endpoint;
     }
@@ -82,24 +141,40 @@ class Service
     /**
      * Fetch data from service.
      *
+     * @param array $fields Optional array of fields to be sent on service call.
+     *
      * @return array
      */
-    public function fetch()
+    public function fetch(array $fields = null)
+    {
+        $response = $this->call($fields);
+        $result   = $this->handleResponse($response);
+
+        return $result;
+    }
+
+    /**
+     * Execute service call and retrieve it's response.
+     *
+     * @param array $fields Optional array of fields to be sent.
+     *
+     * @return mixed
+     */
+    protected function call(array $fields = null)
     {
         $options = array(
-            CURLOPT_URL => $this->getEndpoint(),
-            CURLOPT_RETURNTRANSFER => 1
+            CURLOPT_URL            => $this->getEndpoint(),
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_POSTFIELDS     => http_build_query($fields)
         );
-        
+
         $ch = curl_init();
         curl_setopt_array($ch, $options);
 
         $response = curl_exec($ch);
         curl_close($ch);
 
-        $result = $this->_handleResponse($response);
-
-        return $result;
+        return $response;
     }
 
     /**
@@ -108,57 +183,38 @@ class Service
      *
      * @param string $response
      *
-     * @return array
+     * @throws ResponseException
+     * @throws ResponseErrorException
      *
-     * @throws NotFoundException
-     * @throws InvalidAppIdException
-     * @throws NotAllowedException
-     * @throws TooManyRequestsException
-     * @throws RuntimeException
+     * @return array
      */
-    protected function _handleResponse($response)
+    protected function handleResponse($response)
     {
-        if (!is_string($response)) {
-            throw new RuntimeException('Invalid service response received.');
+        $result = json_decode($response, true);
+        if (!is_array($result)) {
+            throw new ResponseException(
+                'Failed to decode service response.',
+                $response
+            );
         }
 
-        $response = json_decode($response, true);
-
-        if (!isset($response['error']) || $response['error'] === false) {
-            return $response;
+        if (empty($result['error'])) {
+            return $result;
         }
 
-        switch ($response['message']) {
-            case self::ERR_INVALID_APP_ID:
-                throw new InvalidAppIdException(
-                    $response['description'],
-                    $response['status']
-                );
-
-            case self::ERR_NOT_FOUND:
-                throw new NotFoundException(
-                    $response['description'],
-                    $response['status']
-                );
-
-            case self::ERR_TOO_MANY_REQUESTS:
-                throw new TooManyRequestsException(
-                    $response['description'],
-                    $response['status']
-                );
-
-            case self::ERR_NOT_ALLOWED:
-                throw new NotAllowedException(
-                    $response['description'],
-                    $response['status']
-                );
-
-            default:
-                throw new RuntimeException(
-                    $response['description'],
-                    $response['status']
-                );
+        if (!empty($result['message']) && !empty($result['description']) &&
+            !empty($result['status'])) {
+            throw new ResponseErrorException(
+                $result['message'],
+                $result['description'],
+                $result['status'],
+                $response
+            );
         }
+
+        throw new ResponseException(
+            'Unexpected service response received.',
+            $response
+        );
     }
-
 }
