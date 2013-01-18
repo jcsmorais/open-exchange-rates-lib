@@ -18,20 +18,80 @@
 namespace OpenExchangeRates\Rates;
 
 use OpenExchangeRates\Rates\Exception\NotFoundException;
+use OpenExchangeRates\Rates\Exception\UnexpectedValueException;
+use OpenExchangeRates\Service\Service;
 
-abstract class Rates
+class Rates
 {
+    /**
+     * @var string Disclaimer.
+     */
+    protected $disclaimer;
 
     /**
-     * @var string Iso4217 value of the currency used as a base for retrieved
-     * rates.
+     * @var string License agreement.
      */
-    protected $_base;
+    protected $license;
 
     /**
-     * @var array Rates container.
+     * @var int Timestamp that indicates the time when the rates were calculated.
      */
-    protected $_rates = array();
+    protected $timestamp;
+
+    /**
+     * @var string Iso4217 value of the currency used as a base for retrieved rates.
+     */
+    protected $base;
+
+    /**
+     * @var array Container.
+     */
+    protected $rates = array();
+
+    /**
+     * @var Service Service abstraction.
+     */
+    protected $service = null;
+
+    /**
+     * Class constructor.
+     *
+     * @param Service $service
+     */
+    public function __construct(Service $service)
+    {
+        $this->service = $service;
+    }
+
+    /**
+     * Retrieves the disclaimer.
+     *
+     * @return string
+     */
+    public function getDisclaimer()
+    {
+        return $this->disclaimer;
+    }
+
+    /**
+     * Retrieves the license agreement.
+     *
+     * @return string
+     */
+    public function getLicense()
+    {
+        return $this->license;
+    }
+
+    /**
+     * Retrieves the timestamp when the rates were calculated.
+     *
+     * @return int
+     */
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
 
     /**
      * Retrieve Iso4217 value of base.
@@ -40,17 +100,7 @@ abstract class Rates
      */
     public function getBase()
     {
-        return $this->_base;
-    }
-
-    /**
-     * Retrieve base rate.
-     *
-     * @return float
-     */
-    public function getBaseRate()
-    {
-        return $this->getRateByIso4217($this->_base);
+        return $this->base;
     }
 
     /**
@@ -60,7 +110,7 @@ abstract class Rates
      */
     public function getRates()
     {
-        return $this->_rates;
+        return $this->rates;
     }
 
     /**
@@ -68,48 +118,109 @@ abstract class Rates
      *
      * @param string $iso4217
      *
-     * @return string
-     *
      * @throws NotFoundException
+     *
+     * @return string
      */
-    public function getRateByIso4217($iso4217)
+    public function getByIso4217($iso4217)
     {
-        if (isset($this->_rates[$iso4217])) {
-            return $this->_rates[$iso4217];
+        if (isset($this->rates[$iso4217])) {
+            return $this->rates[$iso4217];
         }
 
         throw new NotFoundException($iso4217);
     }
 
     /**
-     * Convert supplied amount from one currency to another.
+     * Convert supplied amount from base currency to supplied currency.
      *
      * @param float $amount Amount to convert.
-     * @param string $fromIso4217 Iso4217 value of the amount's currency.
-     * @param string $toIso4217 Iso4217 value to which the amount will be
-     * converted.
+     * @param string $toIso4217 Iso4217 value to which the amount will be converted to.
      *
      * @return float
      */
-    public function convert($amount, $fromIso4217, $toIso4217)
+    public function convert($amount, $toIso4217)
     {
-        $base = $this->getBaseRate();
-
-        $from = $this->getRateByIso4217($fromIso4217);
-        $to   = $this->getRateByIso4217($toIso4217);
-
-        return $base / $from * $amount * $to;
+        return $amount * $this->getByIso4217($toIso4217);
     }
 
     /**
      * Fetch rates.
+     *
+     * @param string $base Optional parameter, Iso4217 value of the currency used as a base for rates to be retrieved,
+     *   USD by default.
+     * @param bool $refresh Optional parameter, false by default.
+     *
+     * @return Rates
      */
-    public function fetch()
+    public function fetch($base = 'USD', $refresh = false)
     {
-        $result = $this->_service->fetch();
+        if ($base === $this->getBase() && !empty($this->rates) && false === $refresh) {
+            return $this;
+        }
 
-        $this->_base  = $result['base'];
-        $this->_rates = $result['rates'];
+        $data = $this->service->fetch(
+            array(
+                'base' => $base
+            )
+        );
+
+        return $this->populate($data);
     }
 
+    /**
+     * Fetch rates according to supplied $iso4217 values.
+     *
+     * @param array $iso4217 Array of iso4217 values in order to fetch specific rates.
+     * @param string $base Optional parameter, Iso4217 value of the currency used as a base for rates to be retrieved,
+     *   USD by default.
+     * @param bool $refresh Optional parameter, false by default.
+     *
+     * @return Rates
+     */
+    public function fetchByIso4217(array $iso4217, $base = 'USD', $refresh = false)
+    {
+        if ($base === $this->getBase() && !empty($this->rates)) {
+            $intersection = array_intersect_key($this->rates, array_flip($iso4217));
+            if (count($iso4217) === count($intersection) && false === $refresh) {
+                return $this;
+            }
+        }
+
+        $data = $this->service->fetch(
+            array(
+                'base'    => $base,
+                'symbols' => implode(',', $iso4217)
+            )
+        );
+
+        return $this->populate($data);
+    }
+
+    /**
+     * Populate container with supplied data.
+     *
+     * @param array $data
+     *
+     * @throws UnexpectedValueException
+     *
+     * @return Rates
+     */
+    public function populate(array $data)
+    {
+        static $expected = array('disclaimer', 'license', 'timestamp', 'base', 'rates');
+
+        $intersection = array_intersect_key($data, array_flip($expected));
+        if (empty($intersection) || !is_array($data['rates'])) {
+            throw new UnexpectedValueException($data);
+        }
+
+        $this->disclaimer = $data['disclaimer'];
+        $this->license    = $data['license'];
+        $this->timestamp  = $data['timestamp'];
+        $this->base       = $data['base'];
+        $this->rates      = $data['rates'];
+
+        return $this;
+    }
 }
