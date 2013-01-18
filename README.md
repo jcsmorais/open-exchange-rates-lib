@@ -1,7 +1,7 @@
 README
 ======
 
-What is Open Exchange Rates library?
+What is Open Exchange Rates library? [![Build Status](https://travis-ci.org/jcsmorais/open-exchange-rates-lib.png?branch=master)](https://travis-ci.org/jcsmorais/open-exchange-rates-lib)
 ----------------------------------
 Open Exchange Rates library is a PHP based library for the services provided by [Open Exchange Rates](http://openexchangerates.org): a real-time exchange rates API for developers.
 
