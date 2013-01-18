@@ -165,8 +165,11 @@ class Service
         $options = array(
             CURLOPT_URL            => $this->getEndpoint(),
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_POSTFIELDS     => http_build_query($fields)
         );
+
+        if (!empty($fields)) {
+            $options[CURLOPT_POSTFIELDS] = http_build_query($fields);
+        }
 
         $ch = curl_init();
         curl_setopt_array($ch, $options);
