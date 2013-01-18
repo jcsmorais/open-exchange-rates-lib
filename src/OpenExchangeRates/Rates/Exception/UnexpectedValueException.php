@@ -18,22 +18,23 @@
 namespace OpenExchangeRates\Rates\Exception;
 
 /**
- * Thrown when a rate isn't found while trying to retrieve it by it's
- * Iso4217 value.
+ * Thrown when a value does not match with a set of values.
  */
-class NotFoundException extends RatesException
+class UnexpectedValueException extends RatesException
 {
-
     /**
      * Class constructor.
      *
-     * @param string $iso4217
+     * @param mixed $value
      */
-    public function __construct($iso4217)
+    public function __construct($value)
     {
+        if (is_array($value)) {
+            $value = var_export($value, true);
+        }
+
         parent::__construct(
-            sprintf("Rate not found for Iso4217 '%s'.", $iso4217)
+            sprintf("Unexpected value '%s' supplied.", $value)
         );
     }
-
 }

@@ -23,33 +23,23 @@ use OpenExchangeRates\Service\Service;
 class Currencies
 {
     /**
-     * @var array Currencies container.
+     * @var array Container.
      */
-    protected $_currencies = array();
-
-    /**
-     * @var string Service endpoint.
-     */
-    protected $_endpoint = 'openexchangerates.org/api/currencies.json';
+    protected $currencies = array();
 
     /**
      * @var Service Service abstraction.
      */
-    protected $_service = null;
+    protected $service = null;
 
     /**
      * Class constructor.
      *
-     * @param string $appId
-     * @param bool $secureConnection
+     * @param Service $service
      */
-    public function __construct($appId, $secureConnection)
+    public function __construct(Service $service)
     {
-        $this->_service = new Service(
-            $this->_endpoint,
-            $appId,
-            $secureConnection
-        );
+        $this->service = $service;
     }
 
     /**
@@ -59,7 +49,7 @@ class Currencies
      */
     public function getCurrencies()
     {
-        return $this->_currencies;
+        return $this->currencies;
     }
 
     /**
@@ -67,14 +57,14 @@ class Currencies
      *
      * @param string $iso4217
      *
-     * @return string
-     *
      * @throws NotFoundException
+     *
+     * @return string
      */
-    public function getCurrencyByIso4217($iso4217)
+    public function getByIso4217($iso4217)
     {
-        if (isset($this->_currencies[$iso4217])) {
-            return $this->_currencies[$iso4217];
+        if (isset($this->currencies[$iso4217])) {
+            return $this->currencies[$iso4217];
         }
 
         throw new NotFoundException($iso4217);
@@ -82,10 +72,33 @@ class Currencies
 
     /**
      * Fetch currencies.
+     *
+     * @param bool $refresh Optional parameter, false by default.
+     *
+     * @return Currencies
      */
-    public function fetch()
+    public function fetch($refresh = false)
     {
-        $this->_currencies = $this->_service->fetch();
+        if (!empty($this->currencies) && false === $refresh) {
+            return $this;
+        }
+
+        $data = $this->service->fetch();
+
+        return $this->populate($data);
     }
 
+    /**
+     * Populate container with supplied data.
+     *
+     * @param array $data
+     *
+     * @return Currencies
+     */
+    public function populate(array $data)
+    {
+        $this->currencies = $data;
+
+        return $this;
+    }
 }

@@ -15,8 +15,6 @@
  *   See LICENSE shipped with this library.
  */
 
-namespace OpenExchangeRates\Service\Exception;
+$loader = require __DIR__ . '/vendor/autoload.php';
 
-class RuntimeException extends ServiceException
-{
-}
+return $loader;

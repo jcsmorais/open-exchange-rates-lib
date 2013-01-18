@@ -15,8 +15,22 @@
  *   See LICENSE shipped with this library.
  */
 
-namespace OpenExchangeRates\Service\Exception;
+namespace OpenExchangeRates\Rates\Exception;
 
-class NotFoundException extends ServiceException
+/**
+ * Thrown when a rate isn't found while trying to retrieve it by it's Iso4217 value.
+ */
+class NotFoundException extends RatesException
 {
+    /**
+     * Class constructor.
+     *
+     * @param string $iso4217
+     */
+    public function __construct($iso4217)
+    {
+        parent::__construct(
+            sprintf("Rate not found for Iso4217 '%s'.", $iso4217)
+        );
+    }
 }
