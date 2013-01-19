@@ -53,9 +53,10 @@ class Currencies
     }
 
     /**
-     * Retrieve currency by it's Iso4217 value.
+     * Retrieve currency name by it's Iso4217 value.
      *
      * @param string $iso4217
+     *   Iso4217 value.
      *
      * @throws NotFoundException
      *
@@ -73,7 +74,8 @@ class Currencies
     /**
      * Fetch currencies.
      *
-     * @param bool $refresh Optional parameter, false by default.
+     * @param bool $refresh
+     *   Optional parameter, false by default.
      *
      * @return Currencies
      */
@@ -92,6 +94,7 @@ class Currencies
      * Populate container with supplied data.
      *
      * @param array $data
+     *   An array of currencies where each element has an Iso4217 as key and the matching currency name as value.
      *
      * @return Currencies
      */

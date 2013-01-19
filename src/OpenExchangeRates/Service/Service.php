@@ -27,7 +27,7 @@ class Service
      */
     protected $url;
 
-    /*
+    /**
      * @var string APP ID.
      */
     protected $appId;
@@ -40,9 +40,12 @@ class Service
     /**
      * Class constructor.
      *
-     * @param string $url              API url.
-     * @param string $appId            APP id.
-     * @param bool   $secureConnection Optional parameter, false by default.
+     * @param string $url
+     *   API url.
+     * @param string $appId
+     *   APP id.
+     * @param bool $secureConnection
+     *   Optional parameter, false by default.
      */
     public function __construct($url, $appId, $secureConnection = false)
     {
@@ -54,7 +57,8 @@ class Service
     /**
      * Defines API url.
      *
-     * @param string $url API url.
+     * @param string $url
+     *   API url.
      *
      * @return Service
      */
@@ -68,7 +72,8 @@ class Service
     /**
      * Defines APP id.
      *
-     * @param string $appId APP id.
+     * @param string $appId
+     *   APP id.
      *
      * @return Service
      */
@@ -82,7 +87,8 @@ class Service
     /**
      * Defines if service requests should be made through a secure connection.
      *
-     * @param bool $secureConnection Status of secure connection.
+     * @param bool $secureConnection
+     *   True enables secure connection usage, false disables it.
      *
      * @return Service
      */
@@ -141,7 +147,8 @@ class Service
     /**
      * Fetch data from service.
      *
-     * @param array $fields Optional array of fields to be sent on service call.
+     * @param array $fields
+     *   Optional parameter, an array of fields to be sent on service call.
      *
      * @return array
      */
@@ -156,7 +163,8 @@ class Service
     /**
      * Execute service call and retrieve it's response.
      *
-     * @param array $fields Optional array of fields to be sent.
+     * @param array $fields
+     *   Optional parameter, an array of fields to be sent on service call.
      *
      * @return mixed
      */
@@ -181,10 +189,10 @@ class Service
     }
 
     /**
-     * Response handler, retrieves an array of data on success, throws an
-     * exception on failure.
+     * Response handler, retrieves an array of data on success, throws an exception on failure.
      *
      * @param string $response
+     *   Service response in JSON format.
      *
      * @throws ResponseException
      * @throws ResponseErrorException

@@ -117,10 +117,11 @@ class Rates
      * Retrieve rate by it's Iso4217 value.
      *
      * @param string $iso4217
+     *   Iso4217 value.
      *
      * @throws NotFoundException
      *
-     * @return string
+     * @return float
      */
     public function getByIso4217($iso4217)
     {
@@ -134,22 +135,25 @@ class Rates
     /**
      * Convert supplied amount from base currency to supplied currency.
      *
-     * @param float $amount Amount to convert.
-     * @param string $toIso4217 Iso4217 value to which the amount will be converted to.
+     * @param float $amount
+     *   Amount to convert.
+     * @param string $iso4217
+     *   Iso4217 value to which the amount will be converted to.
      *
      * @return float
      */
-    public function convert($amount, $toIso4217)
+    public function convert($amount, $iso4217)
     {
-        return $amount * $this->getByIso4217($toIso4217);
+        return $amount * $this->getByIso4217($iso4217);
     }
 
     /**
      * Fetch rates.
      *
-     * @param string $base Optional parameter, Iso4217 value of the currency used as a base for rates to be retrieved,
-     *   USD by default.
-     * @param bool $refresh Optional parameter, false by default.
+     * @param string $base
+     *   Optional parameter, Iso4217 value of the currency used as a base for rates to be retrieved, USD by default.
+     * @param bool $refresh
+     *   Optional parameter, false by default.
      *
      * @return Rates
      */
@@ -171,10 +175,12 @@ class Rates
     /**
      * Fetch rates according to supplied $iso4217 values.
      *
-     * @param array $iso4217 Array of iso4217 values in order to fetch specific rates.
-     * @param string $base Optional parameter, Iso4217 value of the currency used as a base for rates to be retrieved,
-     *   USD by default.
-     * @param bool $refresh Optional parameter, false by default.
+     * @param array $iso4217
+     *   Array of Iso4217 values in order to fetch specific rates.
+     * @param string $base
+     *   Optional parameter, Iso4217 value of the currency used as a base for rates to be retrieved, USD by default.
+     * @param bool $refresh
+     *   Optional parameter, false by default.
      *
      * @return Rates
      */
@@ -201,6 +207,8 @@ class Rates
      * Populate container with supplied data.
      *
      * @param array $data
+     *   An array with the keys ('disclaimer', 'license', 'timestamp', 'base' and 'rates') where the latter must also be
+     *   an array.
      *
      * @throws UnexpectedValueException
      *
