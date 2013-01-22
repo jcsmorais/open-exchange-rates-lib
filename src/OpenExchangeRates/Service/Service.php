@@ -170,17 +170,11 @@ class Service
      */
     protected function call(array $fields = null)
     {
-        $options = array(
-            CURLOPT_URL            => $this->getEndpoint(),
-            CURLOPT_RETURNTRANSFER => 1,
-        );
-
-        if (!empty($fields)) {
-            $options[CURLOPT_POSTFIELDS] = http_build_query($fields);
-        }
+        $fields = !empty($fields) ? '&' . http_build_query($fields) : '';
 
         $ch = curl_init();
-        curl_setopt_array($ch, $options);
+        curl_setopt($ch, CURLOPT_URL, $this->getEndpoint() . $fields);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         $response = curl_exec($ch);
         curl_close($ch);
