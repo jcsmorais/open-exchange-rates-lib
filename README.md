@@ -8,7 +8,7 @@ Open Exchange Rates library is a PHP based library for the services provided by 
 
 Requirements
 ------------
-* PHP 5.3+
+* PHP 5.3.14+
 * cURL support
 * An Open Exchange Rates [APP ID](https://openexchangerates.org/signup).
 
