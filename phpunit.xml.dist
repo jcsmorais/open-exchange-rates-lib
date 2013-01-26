@@ -11,7 +11,7 @@
      bootstrap="autoload.php"
 >
     <php>
-        <ini name="error_reporting" value="E_ALL"/>
+        <ini name="error_reporting" value="30719"/>
     </php>
     <testsuites>
         <testsuite name="Open Exchange Rates library Test Suite">
